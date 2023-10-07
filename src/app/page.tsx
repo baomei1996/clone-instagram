@@ -1,5 +1,9 @@
-import type { Metadata } from "next";
-
+import Header from "@/components/Header";
 export default function Page() {
-    return <div></div>;
+    return (
+        <div>
+            {/* Header */}
+            <Header />
+        </div>
+    );
 }
