@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import { FiSearch } from "react-icons/fi";
 
 export default function Header() {
     return (
@@ -26,10 +27,20 @@ export default function Header() {
                         alt="logo"
                     />
                 </div>
+                {/* Middle */}
+                <div className="relative">
+                    <div className="absolute top-2 left-2">
+                        <FiSearch className="text-xl text-gray-500" />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        className="bg-gray-50 pl-10 border-gray-500 text-sm focus:ring-black focus:border-black rounded-md"
+                    />
+                </div>
+                {/* Right */}
                 <h1>Right sides</h1>
             </div>
-            {/* Middle */}
-            {/* Right */}
         </div>
     );
 }
