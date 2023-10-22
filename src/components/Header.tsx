@@ -1,12 +1,13 @@
 import Image from "next/image";
 import React from "react";
 import { FiSearch } from "react-icons/fi";
+import { HiOutlinePlusCircle, HiHome } from "react-icons/hi";
 
 export default function Header() {
     return (
         <div>
             {/* Left */}
-            <div className="flex items-center justify-between max-w-6xl">
+            <div className="flex items-center justify-between max-w-6xl mx-4 xl:mx-auto">
                 <div className="cursor-pointer h-24 w-24 relative hidden lg:inline-grid">
                     <Image
                         src={
@@ -39,7 +40,15 @@ export default function Header() {
                     />
                 </div>
                 {/* Right */}
-                <h1>Right sides</h1>
+                <div className="flex space-x-4 items-center">
+                    <HiHome className="text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out" />
+                    <HiOutlinePlusCircle className="hidden md:inline-flex text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out" />
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsynwv-5qtogtOwJbIjaPFJUmHpzhxgqIAug&usqp=CAU"
+                        alt="user-image"
+                        className="h-10 rounded-full cursor-pointer"
+                    />
+                </div>
             </div>
         </div>
     );
