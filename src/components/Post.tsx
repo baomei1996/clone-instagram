@@ -1,5 +1,10 @@
 import React from "react";
-import { HiDotsHorizontal } from "react-icons/hi";
+import {
+    HiDotsHorizontal,
+    HiOutlineChat,
+    HiOutlineBookmark,
+    HiOutlineHeart,
+} from "react-icons/hi";
 
 type PostProps = {
     username: string;
@@ -23,6 +28,14 @@ export default function Post({ img, userImg, username, caption }: PostProps) {
             </div>
             {/* Post Image */}
             <img className="object-cover w-full" src={img} alt="" />
+            {/* Post Buttons */}
+            <div className="flex justify-between px-4 pt-4">
+                <div className="flex space-x-4">
+                    <HiOutlineHeart className="btn" />
+                    <HiOutlineChat className="btn" />
+                </div>
+                <HiOutlineBookmark className="btn" />
+            </div>
         </div>
     );
 }
