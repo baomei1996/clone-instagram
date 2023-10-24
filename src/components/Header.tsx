@@ -44,7 +44,7 @@ export default function Header() {
                     <HiHome className="text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out" />
                     <HiOutlinePlusCircle className="hidden md:inline-flex text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out" />
                     <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsynwv-5qtogtOwJbIjaPFJUmHpzhxgqIAug&usqp=CAU"
+                        src="https://1000logos.net/wp-content/uploads/2017/02/Logo-Instagram.png"
                         alt="user-image"
                         className="h-10 rounded-full cursor-pointer"
                     />
