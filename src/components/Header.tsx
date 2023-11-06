@@ -1,9 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import React from "react";
 import { FiSearch } from "react-icons/fi";
 import { HiOutlinePlusCircle, HiHome } from "react-icons/hi";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export default function Header() {
+    const { data: session } = useSession();
+
     return (
         <div className="shadow-sm border-b  sticky top-0 bg-white z-30">
             <div className="flex items-center justify-between max-w-6xl mx-4 xl:mx-auto">
@@ -42,12 +47,19 @@ export default function Header() {
                 {/* Right */}
                 <div className="flex space-x-4 items-center">
                     <HiHome className="text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out" />
-                    <HiOutlinePlusCircle className="hidden md:inline-flex text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out" />
-                    <img
-                        src="https://1000logos.net/wp-content/uploads/2017/02/Logo-Instagram.png"
-                        alt="user-image"
-                        className="h-10 rounded-full cursor-pointer"
-                    />
+                    {session ? (
+                        <>
+                            <HiOutlinePlusCircle className="hidden md:inline-flex text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out" />
+                            <img
+                                onClick={() => signOut()}
+                                src={session.user?.image ?? ""}
+                                alt="user-image"
+                                className="h-10 rounded-full cursor-pointer"
+                            />
+                        </>
+                    ) : (
+                        <button onClick={() => signIn()}>Sign in</button>
+                    )}
                 </div>
             </div>
         </div>
