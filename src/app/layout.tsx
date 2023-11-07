@@ -3,6 +3,7 @@
 import { Session } from "next-auth";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import { RecoilRoot } from "recoil";
 
 export default function RootLayout({
     children,
@@ -14,7 +15,9 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <SessionProvider session={session}>{children}</SessionProvider>
+                <SessionProvider session={session}>
+                    <RecoilRoot>{children}</RecoilRoot>
+                </SessionProvider>
             </body>
         </html>
     );

@@ -5,9 +5,12 @@ import React from "react";
 import { FiSearch } from "react-icons/fi";
 import { HiOutlinePlusCircle, HiHome } from "react-icons/hi";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { modalState } from "@/atom/modalAtom";
+import { useSetRecoilState } from "recoil";
 
 export default function Header() {
     const { data: session } = useSession();
+    const setOpen = useSetRecoilState(modalState);
 
     return (
         <div className="shadow-sm border-b  sticky top-0 bg-white z-30">
@@ -49,7 +52,10 @@ export default function Header() {
                     <HiHome className="text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out" />
                     {session ? (
                         <>
-                            <HiOutlinePlusCircle className="hidden md:inline-flex text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out" />
+                            <HiOutlinePlusCircle
+                                className="hidden md:inline-flex text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out"
+                                onClick={() => setOpen(true)}
+                            />
                             <img
                                 onClick={() => signOut()}
                                 src={session.user?.image ?? ""}
