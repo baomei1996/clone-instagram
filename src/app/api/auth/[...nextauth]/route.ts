@@ -1,5 +1,7 @@
-import NextAuth from "next-auth";
+import NextAuth, { Awaitable, DefaultSession, Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+
+interface SessionWithUsername extends DefaultSession {}
 
 const handler = NextAuth({
     providers: [
@@ -10,6 +12,16 @@ const handler = NextAuth({
     ],
     pages: {
         signIn: "/auth/signin",
+    },
+    callbacks: {
+        session({ session, token, user }) {
+            session.user.username = session.user.name
+                ?.split(" ")
+                .join("")
+                .toLocaleLowerCase();
+            session.user.uid = token.sub;
+            return session;
+        },
     },
 });
 
