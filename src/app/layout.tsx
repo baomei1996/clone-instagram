@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body>
+            <body cz-shortcut-listen="false" id="root">
                 <SessionProvider session={session}>
                     <RecoilRoot>{children}</RecoilRoot>
                 </SessionProvider>

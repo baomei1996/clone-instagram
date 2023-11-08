@@ -5,6 +5,8 @@ import { modalState } from "@/atom/modalAtom";
 import { useRecoilState } from "recoil";
 import Modal from "react-modal";
 
+Modal.setAppElement("#root");
+
 export default function UploadModal() {
     const [open, setOpen] = useRecoilState(modalState);
     return (
