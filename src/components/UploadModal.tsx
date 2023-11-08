@@ -2,14 +2,24 @@
 
 import React from "react";
 import { modalState } from "@/atom/modalAtom";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
+import Modal from "react-modal";
 
 export default function UploadModal() {
-    const isOpen = useRecoilValue(modalState);
+    const [open, setOpen] = useRecoilState(modalState);
     return (
-        <div>
-            Upload Modal
-            {isOpen && <h1>modal is open</h1>}
-        </div>
+        <>
+            {open && (
+                <Modal
+                    className="max-w-lg w-[90%] h-[300px] absolute top-56 left-[50%] translate-x-[-50%] bg-white border-2 rounded-md shadow-md"
+                    isOpen={open}
+                    onRequestClose={() => setOpen(false)}
+                >
+                    <div className="flex flex-col justify-center items-center h-[100%]">
+                        Modal
+                    </div>
+                </Modal>
+            )}
+        </>
     );
 }
