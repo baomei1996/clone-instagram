@@ -7,8 +7,10 @@ import { HiOutlinePlusCircle, HiHome } from "react-icons/hi";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { modalState } from "@/atom/modalAtom";
 import { useSetRecoilState } from "recoil";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
+    const router = useRouter();
     const { data: session } = useSession();
     const setOpen = useSetRecoilState(modalState);
 
@@ -24,6 +26,7 @@ export default function Header() {
                         layout="fill"
                         className="object-contain"
                         alt="logo"
+                        onClick={() => router.push("/")}
                     />
                 </div>
                 <div className="cursor-pointer h-24 w-10 relative lg:hidden">
@@ -34,6 +37,7 @@ export default function Header() {
                         layout="fill"
                         className="object-contain"
                         alt="logo"
+                        onClick={() => router.push("/")}
                     />
                 </div>
                 {/* Middle */}
@@ -49,7 +53,10 @@ export default function Header() {
                 </div>
                 {/* Right */}
                 <div className="flex space-x-4 items-center">
-                    <HiHome className="text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out" />
+                    <HiHome
+                        className="text-2xl cursor-pointer hover:scale-125 transition-transform duration-200 ease-out"
+                        onClick={() => router.push("/")}
+                    />
                     {session ? (
                         <>
                             <HiOutlinePlusCircle
