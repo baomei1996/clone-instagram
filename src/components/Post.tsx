@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     HiDotsHorizontal,
     HiOutlineChat,
@@ -7,8 +7,25 @@ import {
     HiOutlineEmojiHappy,
 } from "react-icons/hi";
 import { useSession } from "next-auth/react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+    QuerySnapshot,
+    Timestamp,
+    addDoc,
+    collection,
+    onSnapshot,
+    orderBy,
+    query,
+    serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../../firebase";
+import Moment from "react-moment";
+
+type CommentData = {
+    comment: string;
+    username: string;
+    userImage: string;
+    timestamp: Timestamp;
+};
 
 type PostProps = {
     id: string;
@@ -27,6 +44,25 @@ export default function Post({
 }: PostProps) {
     const { data: session } = useSession();
     const [comment, setComment] = useState<string>("");
+    const [comments, setComments] = useState<
+        QuerySnapshot<CommentData>["docs"]
+    >([]);
+
+    useEffect(() => {
+        const unsubscribe = onSnapshot(
+            query(
+                collection(db, "posts", id, "comments"),
+                orderBy("timestamp", "desc")
+            ),
+            (snapshot) => {
+                setComments(
+                    snapshot.docs as QuerySnapshot<CommentData>["docs"]
+                );
+            }
+        );
+
+        return unsubscribe;
+    }, [db, id]);
 
     const sentComment = async (e: React.FormEvent<HTMLFormElement>) => {
         try {
@@ -73,6 +109,30 @@ export default function Post({
                 <span className="font-bold mr-2">{username}</span>
                 {caption}
             </p>
+            {comments.length > 0 && (
+                <div className="mx-10 max-h-24 overflow-y-scroll scrollbar-none">
+                    {comments.map((comment, idx) => (
+                        <div
+                            key={`${id}_${idx}`}
+                            className="flex items-center space-x-2 mb-2"
+                        >
+                            <img
+                                className="h-7 rounded-full object-cover"
+                                src={comment.data().userImage}
+                            />
+                            <p className="font-semibold">
+                                {comment.data().username}
+                            </p>
+                            <p className="flex-1 truncate">
+                                {comment.data().comment}
+                            </p>
+                            <Moment fromNow>
+                                {comment.data().timestamp?.toDate()}
+                            </Moment>
+                        </div>
+                    ))}
+                </div>
+            )}
             {/* Post Input Box */}
             {session && (
                 <form className="flex items-center p-4" onSubmit={sentComment}>
