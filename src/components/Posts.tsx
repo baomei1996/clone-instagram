@@ -46,6 +46,7 @@ export default function Posts() {
             {posts.map((post) => (
                 <Post
                     key={post.id}
+                    id={post.id}
                     username={post.username}
                     userImg={post.profileImg}
                     img={post.image}

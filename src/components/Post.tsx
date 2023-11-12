@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     HiDotsHorizontal,
     HiOutlineChat,
@@ -7,16 +7,43 @@ import {
     HiOutlineEmojiHappy,
 } from "react-icons/hi";
 import { useSession } from "next-auth/react";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../../firebase";
 
 type PostProps = {
+    id: string;
     username: string;
     userImg: string;
     img: string;
     caption: string;
 };
 
-export default function Post({ img, userImg, username, caption }: PostProps) {
+export default function Post({
+    id,
+    img,
+    userImg,
+    username,
+    caption,
+}: PostProps) {
     const { data: session } = useSession();
+    const [comment, setComment] = useState<string>("");
+
+    const sentComment = async (e: React.FormEvent<HTMLFormElement>) => {
+        try {
+            e.preventDefault();
+            const commentToSend = comment;
+            setComment("");
+            await addDoc(collection(db, "posts", id, "comments"), {
+                comment: commentToSend,
+                username: session?.user?.username,
+                userImage: session?.user?.image,
+                timestamp: serverTimestamp(),
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     return (
         <div className="bg-white my-7 border rounded-md">
             {/* Post Header */}
@@ -48,14 +75,22 @@ export default function Post({ img, userImg, username, caption }: PostProps) {
             </p>
             {/* Post Input Box */}
             {session && (
-                <form className="flex items-center p-4">
+                <form className="flex items-center p-4" onSubmit={sentComment}>
                     <HiOutlineEmojiHappy className="text-2xl" />
                     <input
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
                         className="border-none flex-1 focus:ring-0"
                         type="text"
                         placeholder="Enter your comment..."
                     />
-                    <button className="text-blue-400 font-bold">Post</button>
+                    <button
+                        type="submit"
+                        disabled={!comment.trim()}
+                        className="text-blue-400 font-bold disabled:text-blue-200"
+                    >
+                        Post
+                    </button>
                 </form>
             )}
         </div>
