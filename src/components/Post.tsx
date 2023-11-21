@@ -4,6 +4,7 @@ import {
     HiOutlineChat,
     HiOutlineBookmark,
     HiOutlineHeart,
+    HiHeart,
     HiOutlineEmojiHappy,
 } from "react-icons/hi";
 import { useSession } from "next-auth/react";
@@ -12,13 +13,17 @@ import {
     Timestamp,
     addDoc,
     collection,
+    deleteDoc,
+    doc,
     onSnapshot,
     orderBy,
     query,
     serverTimestamp,
+    setDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import Moment from "react-moment";
+import { set } from "firebase/database";
 
 type CommentData = {
     comment: string;
@@ -47,6 +52,8 @@ export default function Post({
     const [comments, setComments] = useState<
         QuerySnapshot<CommentData>["docs"]
     >([]);
+    const [likes, setLikes] = useState<Array<string>>([]);
+    const [hasLiked, setHasLiked] = useState<boolean>(false);
 
     useEffect(() => {
         const unsubscribe = onSnapshot(
@@ -64,6 +71,21 @@ export default function Post({
         return unsubscribe;
     }, [db, id]);
 
+    useEffect(() => {
+        const unsubscribe = onSnapshot(
+            query(collection(db, "posts", id, "likes")),
+            (snapshot) => {
+                setLikes(snapshot.docs.map((doc) => doc.id));
+            }
+        );
+
+        return unsubscribe;
+    }, [db, id]);
+
+    useEffect(() => {
+        setHasLiked(likes.includes(session?.user?.uid ?? ""));
+    }, [likes]);
+
     const sentComment = async (e: React.FormEvent<HTMLFormElement>) => {
         try {
             e.preventDefault();
@@ -75,6 +97,25 @@ export default function Post({
                 userImage: session?.user?.image,
                 timestamp: serverTimestamp(),
             });
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const likePost = async () => {
+        try {
+            if (hasLiked) {
+                await deleteDoc(
+                    doc(db, `posts/${id}/likes`, session?.user.uid ?? "")
+                );
+            } else {
+                await setDoc(
+                    doc(db, `posts/${id}/likes`, session?.user.uid ?? ""),
+                    {
+                        username: session?.user?.username,
+                    }
+                );
+            }
         } catch (err) {
             console.error(err);
         }
@@ -98,7 +139,17 @@ export default function Post({
             {session && (
                 <div className="flex justify-between px-4 pt-4">
                     <div className="flex space-x-4">
-                        <HiOutlineHeart className="btn" />
+                        {hasLiked ? (
+                            <HiHeart
+                                onClick={likePost}
+                                className="btn text-red-400"
+                            />
+                        ) : (
+                            <HiOutlineHeart
+                                onClick={likePost}
+                                className="btn"
+                            />
+                        )}
                         <HiOutlineChat className="btn" />
                     </div>
                     <HiOutlineBookmark className="btn" />
